@@ -50,8 +50,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 15,
-    elevation: 5,
+    elevation: 1,
     borderRadius: 4,
+    marginBottom: 15,
   },
   cardInfo: {
     flexDirection: "row",
