@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 60,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -72,5 +72,12 @@ export const styles = StyleSheet.create({
   },
   ButtonText: {
     color: "#000",
+  },
+  modal: {
+    justifyContent: "center",
+    margin: 0,
+  },
+  modalContent: {
+    height: "80%",
   },
 });

@@ -8,14 +8,24 @@ import {
 } from "react-native";
 import { styles } from "./style";
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
 import { PokemonListItem } from "./types/pokemon";
 import { useEffect, useState } from "react";
 import { fetchPokemons } from "./services/api";
+import Modal from "react-native-modal";
+import Pokemon from "./pokemon/[id]";
 
 export default function Index() {
   // Uso de estado:
   const [pokemons, setPokemons] = useState<PokemonListItem[]>([]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedPokemon, setSelectedPokemon] = useState<string | null>(null);
+
+  const toggleModal = (pokemonName?: string) => {
+    if (pokemonName) {
+      setSelectedPokemon(pokemonName);
+    }
+    setModalVisible(!isModalVisible);
+  };
 
   // Executar componente
   useEffect(() => {
@@ -67,25 +77,25 @@ export default function Index() {
           data={pokemons}
           keyExtractor={(item) => item.name}
           renderItem={({ item, index }) => (
-            <View style={styles.card}>
+            <Pressable
+              onPress={() => toggleModal(item.name)}
+              style={styles.card}
+            >
               <View style={styles.cardInfo}>
-                <Image width={60} height={60} source={{uri: item.image}}></Image>
+                <Image
+                  width={60}
+                  height={60}
+                  source={{ uri: item.image }}
+                ></Image>
                 <View>
                   <Text>#{index + 1}</Text>
-                  <Text>{item.name.charAt(0).toUpperCase() + item.name.slice(1)}</Text>
+                  <Text>
+                    {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                  </Text>
                 </View>
               </View>
-              <Link
-                href={{
-                  pathname: "/pokemon/[id]",
-                  params: {
-                    id: "name",
-                  },
-                }}
-              >
-                <Ionicons name="chevron-forward-outline" size={32}></Ionicons>
-              </Link>
-            </View>
+              <Ionicons name="chevron-forward-outline" size={32}></Ionicons>
+            </Pressable>
           )}
         ></FlatList>
       </View>
@@ -96,6 +106,18 @@ export default function Index() {
           <Text style={styles.ButtonText}> Conhecer Pokemon</Text>
         </Pressable>
       </View>
+
+      {/* MODAL */}
+      <Modal
+        isVisible={isModalVisible}
+        onBackButtonPress={() => toggleModal}
+        swipeDirection={"down"}
+        onSwipeComplete={() => toggleModal}
+        style={styles.modal}>
+        <View style={styles.modalContent}>
+          <Pokemon name={selectedPokemon}></Pokemon>
+        </View>
+      </Modal>
     </View>
   );
 }
