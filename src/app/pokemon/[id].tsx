@@ -21,7 +21,7 @@ export default function Pokemon({ name }: Props) {
       setPokemon(response.data);
       const spesiesURL = response.data.species.url;
       const spesiesResponses = await api.get(spesiesURL);
-      const evolutionsURL = spesiesResponses.data.evolution_chair.url;
+      const evolutionsURL = spesiesResponses.data.evolution_chain.url;
       const evolutionResponse = await api.get(evolutionsURL);
       const evolution = extractEvolutions(evolutionResponse.data.chain);
       const evolutionImages = await Promise.all(
@@ -29,7 +29,7 @@ export default function Pokemon({ name }: Props) {
           const response = await api.get(`/pokemon/${evoName}`);
           return {
             name: evoName,
-            image: response.data.sprites.front_default,
+            image: response.data.sprites.other.showdown.front_default,
           };
         }),
       );
@@ -79,13 +79,17 @@ export default function Pokemon({ name }: Props) {
       <Text style={styles.titulo}>Evoluções</Text>
 
       <View style={styles.footer}>
-        <View style={styles.footerCardContainer}>
-          <View style={styles.footerCard}>
-            <Image source={require("../assets/bulbasaur.png")}></Image>
+        {evolution.map((evo, index) => (
+          <View key={index} style={styles.footerCardContainer}>
+            <View style={styles.footerCard}>
+              <Image
+                style={{ width: 60, height: 60 }}
+                source={{ uri: evo.image }}
+              ></Image>
+            </View>
+            <Text>{evo.name}</Text>
           </View>
-          <Text>Bulbasaur</Text>
-        </View>
-        <View style={styles.footerCardContainer}></View>
+        ))}
       </View>
     </View>
   );
