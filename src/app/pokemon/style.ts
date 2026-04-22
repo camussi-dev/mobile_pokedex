@@ -52,4 +52,20 @@ export const styles = StyleSheet.create({
     borderColor: "#f2f2f2",
     borderRadius: 4,
   },
+  containerAtv: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 20
+  },
+  titleAtv:{
+    fontSize: 15,
+    fontWeight: "bold",
+    marginBottom: 10
+  },
+  novosAtv:{
+    borderWidth: 2,
+    borderColor: "black",
+    borderRadius: 6,
+    padding: 20
+  }
 });

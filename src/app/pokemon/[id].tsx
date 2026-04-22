@@ -14,13 +14,31 @@ interface Evolution {
 export default function Pokemon({ name }: Props) {
   const [pokemon, setPokemon] = useState<any>(null);
   const [evolution, setEvolution] = useState<Evolution[]>([]);
+  const [types, setTypes] = useState<string[]>([]);
+  const [abilities, setAbilities] = useState<string[]>([]);
+  const [stats, setStats] = useState<any>({});
 
   useEffect(() => {
     const loadPokemon = async () => {
       const response = await api.get(`/pokemon/${name}`);
       setPokemon(response.data);
+
       const spesiesURL = response.data.species.url;
       const spesiesResponses = await api.get(spesiesURL);
+      // Tipo do pokemon
+      const pokemonTypes = response.data.types.map((t: any) => t.type.name);
+      setTypes(pokemonTypes);
+      // Habilidades
+      const pokemonAbilities = response.data.abilities.map((a: any) => a.ability.name);
+      setAbilities(pokemonAbilities);
+
+      // Estatisticas principais
+      const pokemonStats = response.data.stats.reduce((acc: any, s: any) => {
+        acc[s.stat.name] = s.base_stat;
+        return acc;
+      }, {});
+      setStats(pokemonStats);
+
       const evolutionsURL = spesiesResponses.data.evolution_chain.url;
       const evolutionResponse = await api.get(evolutionsURL);
       const evolution = extractEvolutions(evolutionResponse.data.chain);
@@ -72,6 +90,36 @@ export default function Pokemon({ name }: Props) {
         <View style={styles.info}>
           <Text style={styles.infoDimensions}>{pokemon.height / 10}m</Text>
           <Text>Altura</Text>
+        </View>
+      </View>
+
+      <View style={styles.containerAtv}>
+        {/* TYPES */}
+        <View style={styles.novosAtv}>
+          <Text style={styles.titleAtv}>Tipos: </Text>
+          {types.map((type, index) => (
+            <Text key={index}>
+              {type}
+            </Text>
+          ))}
+        </View>
+
+        {/* STATUS */}
+        <View style={styles.novosAtv}>
+          <Text style={styles.titleAtv}>Status: </Text>
+          <Text>HP: {stats.hp}</Text>
+          <Text>ATK: {stats.attack}</Text>
+          <Text>DEF: {stats.defense}</Text>
+        </View>
+
+        {/* HABILIDADES */}
+        <View style={styles.novosAtv}>
+          <Text style={styles.titleAtv}>Habilidades: </Text>
+          {pokemon.abilities.map((item: any, index: number) => (
+            <Text key={index}>
+              {item.ability.name}
+            </Text>
+          ))}
         </View>
       </View>
 
